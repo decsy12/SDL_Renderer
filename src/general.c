@@ -1,7 +1,8 @@
 #include "general.h"
+#include <stdlib.h>
 
 
-int* matmul(int* A, int* B, int m, int n, int p) {
+int* matmul(float* A, float* B, int m, int n, int p) {
   int* C = (int*)malloc(m * p * sizeof(int));
 
     for (int i = 0; i < m; i++) {
@@ -17,17 +18,17 @@ int* matmul(int* A, int* B, int m, int n, int p) {
     return C;
 }
 
-//Vec3D to matrix
-float* struct2Mat( Vec3D* V )
-{
-    float x[3];
+// //Vec3D to matrix
+// float* struct2Mat( Vec3D* V )
+// {
+//     float x[3] = {0,0,0};
 
-    x[0] = V->x;
-    x[1] = V->y;
-    x[2] = V->z;
+//     x[0] = V->x;
+//     x[1] = V->y;
+//     x[2] = V->z;
 
-    return x;
-}
+//     return x;
+// }
 
 //Matrix to Vec3D
 Vec3D* mat2Struct( float* M, Vec3D* V )
