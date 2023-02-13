@@ -9,7 +9,7 @@ void shape_printVertexes( Shape* S )
 {
     for(uint8_t i = 0; i < S->numVertexes; i++)
     {        
-        printf("[%d,%d,%d]\n",S->vertexes[i].x,S->vertexes[i].y,S->vertexes[i].z);
+        printf("[%.2f,%.2f,%.2f]\n",S->vertexes[i].x,S->vertexes[i].y,S->vertexes[i].z);
     }
 }
 
@@ -33,74 +33,78 @@ void shape_scale( Shape* S, Vec3D sVec )
     }    
 }
 
-
-// void shape_rotateZ( Shape* S, int8_t degrees )
-// {
-//     //  self.set_rotation([0,0,degrees])
-//     // shape_setRotation({});
-
-//     float rads = deg2rad(degrees);
-
-//     /* Z-Axis rotation matrix */
-//     float rotationZ[3*3] = {cos(rads), -sin(rads), 0, 
-//                             sin(rads), cos(rads) , 0, 
-//                             0        , 0         , 1};
-    
-//     for( uint8_t i = 0; i < S->numVertexes; i++ )
-//     {                       
-//         float tempVecMat[3] = { S->vertexes[i].x,
-//                                 S->vertexes[i].y,
-//                                 S->vertexes[i].z };
-        
-//         mat2Struct( matmul(tempVecMat, rotationZ, 1, 3, 3),
-//                     &(S->vertexes[i]));
-//     }     
+// void shape_addVertex( Shape* S , Vec3D newV )
+// {    
 // }
 
-
-// void shape_rotateY( Shape* S, int8_t degrees )
-// {
-//     //  self.set_rotation([0,0,degrees])
-//     // shape_setRotation({});
-
-//     float rads = deg2rad(degrees);
-
-//     /* Z-Axis rotation matrix */
-//     float rotationY[3*3] = {cos(rads),  0, sin(rads),
-//                             0,          1,         0,
-//                             -1*sin(rads), 0, cos(rads)};
-    
-//     for( uint8_t i = 0; i < S->numVertexes; i++ )
-//     {                        
-//         mat2Struct(matmul(struct2Mat(&(S->vertexes[i])), rotationY, 1, 3, 3) , &(S->vertexes[i]));       
-//     }     
-// }
-
-
-// void shape_rotateX( Shape* S, int8_t degrees )
-// {
-//     //  self.set_rotation([0,0,degrees])
-//     // shape_setRotation({});
-
-//     float rads = deg2rad(degrees);
-
-//     /* Z-Axis rotation matrix */
-//     float rotationX[3*3] = {1,         0,          0,
-//                             0, cos(rads), -1*sin(rads),
-//                             0, sin(rads), cos(rads)};
-    
-//     for( uint8_t i = 0; i < S->numVertexes; i++ )
-//     {                        
-//         mat2Struct(matmul(struct2Mat(&(S->vertexes[i])), rotationX, 1, 3, 3) , &(S->vertexes[i]));          
-//     }     
-// }
-        
-void shape_setRotation(Shape* S, Vec3D Rvec_deg)
+void shape_rotateZ( Shape* S, double degrees )
 {
-    S->curRotation.x = (S->curRotation.x + Rvec_deg.x) % 360;
-    S->curRotation.y = (S->curRotation.y + Rvec_deg.y) % 360;
-    S->curRotation.z = (S->curRotation.z + Rvec_deg.z) % 360;
+    //  self.set_rotation([0,0,degrees])
+    // shape_setRotation({});    
+    double rads = deg2rad(degrees);       
+    
+    for( uint8_t i = 0; i < S->numVertexes; i++ )
+    {                         
+        double xPrime = 0;     
+        double yPrime = 0;
+                
+        xPrime = (S->vertexes[i].x)*cos(rads) + (S->vertexes[i].y)*sin(rads);        
+        yPrime = (S->vertexes[i].y)*cos(rads) - (S->vertexes[i].x)*sin(rads);    
+
+        S->vertexes[i].x = xPrime;
+        S->vertexes[i].y = yPrime;
+    }             
 }
+
+
+void shape_rotateY( Shape* S, double degrees )
+{
+//     //  self.set_rotation([0,0,degrees])
+//     // shape_setRotation({});
+
+    double rads = deg2rad(degrees);
+
+    
+    for( uint8_t i = 0; i < S->numVertexes; i++ )
+    {                        
+        double xPrime = 0;     
+        double zPrime = 0;
+        
+        xPrime = (S->vertexes[i].x)*cos(rads) - (S->vertexes[i].z)*sin(rads);
+        zPrime = (S->vertexes[i].x)*sin(rads) + (S->vertexes[i].z)*cos(rads);        
+
+        S->vertexes[i].x = xPrime;
+        S->vertexes[i].z = zPrime;
+    }     
+}
+
+
+void shape_rotateX( Shape* S, double degrees )
+{
+    //  self.set_rotation([0,0,degrees])
+    // shape_setRotation({});
+
+    float rads = deg2rad(degrees);
+    
+    for( uint8_t i = 0; i < S->numVertexes; i++ )
+    {                        
+        double yPrime = 0;     
+        double zPrime = 0;
+        
+        yPrime = (S->vertexes[i].y)*cos(rads) + (S->vertexes[i].z)*sin(rads);
+        zPrime = (S->vertexes[i].z)*cos(rads) - (S->vertexes[i].y)*sin(rads);    
+
+        S->vertexes[i].y = yPrime;
+        S->vertexes[i].z = zPrime;
+    }       
+}
+        
+// void shape_setRotation(Shape* S, Vec3D Rvec_deg)
+// {
+//     S->curRotation.x = (S->curRotation.x + Rvec_deg.x) % 360;
+//     S->curRotation.y = (S->curRotation.y + Rvec_deg.y) % 360;
+//     S->curRotation.z = (S->curRotation.z + Rvec_deg.z) % 360;
+// }
 
 
 //     def scale_shape(self, sVec):

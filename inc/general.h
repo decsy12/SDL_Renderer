@@ -5,13 +5,13 @@
 
 typedef struct 
 {
-    float x;
-    float y;
-    float z;
+    double x;
+    double y;
+    double z;
 }Vec3D;
 
-#define deg2rad(deg)        360.0/M_PI/deg
-#define rad2deg(rad)        M_PI/360.0*rad
+#define deg2rad(deg)        ( deg * M_PI ) / 180
+#define rad2deg(rad)        rad * ( 180 / M_PI )
 
 
 int* matmul(float* A, float* B, int m, int n, int p);
