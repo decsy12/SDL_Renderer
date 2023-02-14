@@ -1,5 +1,7 @@
 #include "shape.h"
+#include "SDL2/SDL.h"
 #include "general.h"
+#include "main.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <math.h>
@@ -33,14 +35,11 @@ void shape_scale( Shape* S, Vec3D sVec )
     }    
 }
 
-// void shape_addVertex( Shape* S , Vec3D newV )
-// {    
-// }
-
 void shape_rotateZ( Shape* S, double degrees )
-{
-    //  self.set_rotation([0,0,degrees])
-    // shape_setRotation({});    
+{    
+    Vec3D rV = { .x = degrees, .y = 0, .z = 0 };
+    shape_setRotation(S, rV);
+
     double rads = deg2rad(degrees);       
     
     for( uint8_t i = 0; i < S->numVertexes; i++ )
@@ -59,8 +58,8 @@ void shape_rotateZ( Shape* S, double degrees )
 
 void shape_rotateY( Shape* S, double degrees )
 {
-//     //  self.set_rotation([0,0,degrees])
-//     // shape_setRotation({});
+    Vec3D rV = { .x = degrees, .y = 0, .z = 0 };
+    shape_setRotation(S, rV);
 
     double rads = deg2rad(degrees);
 
@@ -81,8 +80,8 @@ void shape_rotateY( Shape* S, double degrees )
 
 void shape_rotateX( Shape* S, double degrees )
 {
-    //  self.set_rotation([0,0,degrees])
-    // shape_setRotation({});
+    Vec3D rV = { .x = degrees, .y = 0, .z = 0 };
+    shape_setRotation(S, rV);
 
     float rads = deg2rad(degrees);
     
@@ -99,12 +98,12 @@ void shape_rotateX( Shape* S, double degrees )
     }       
 }
         
-// void shape_setRotation(Shape* S, Vec3D Rvec_deg)
-// {
-//     S->curRotation.x = (S->curRotation.x + Rvec_deg.x) % 360;
-//     S->curRotation.y = (S->curRotation.y + Rvec_deg.y) % 360;
-//     S->curRotation.z = (S->curRotation.z + Rvec_deg.z) % 360;
-// }
+void shape_setRotation(Shape* S, Vec3D Rvec_deg)
+{        
+    S->curRotation.x = (int)round(S->curRotation.x + Rvec_deg.x) % 360;
+    S->curRotation.y = (int)round(S->curRotation.x + Rvec_deg.y) % 360;
+    S->curRotation.z = (int)round(S->curRotation.x + Rvec_deg.z) % 360;
+}
 
 
 //     def scale_shape(self, sVec):
@@ -123,3 +122,27 @@ void shape_rotateX( Shape* S, double degrees )
         
 //         self.edges.append([v1Idx, v2Idx])
 //         self.numEdges += 1
+
+
+
+void shape_draw( SDL_Renderer* renderer, Shape* S, uint8_t R, uint8_t G, uint8_t B)
+{
+    SDL_SetRenderDrawColor(renderer, R ,G ,B ,255);        
+    for(uint8_t i = 0; i < S->numEdges; i++)
+    {                
+        uint8_t V1Idx = S->edges[i][0];
+        uint8_t V2Idx = S->edges[i][1];
+        SDL_RenderDrawLine(renderer, PIXEL_ALIGNMENT_X + S->vertexes[V1Idx].x, PIXEL_ALIGNMENT_Y + S->vertexes[V1Idx].y, PIXEL_ALIGNMENT_X + S->vertexes[V2Idx].x, PIXEL_ALIGNMENT_Y + S->vertexes[V2Idx].y);
+    }    
+}
+
+void shape_clear( SDL_Renderer* renderer, Shape* S )
+{
+    SDL_SetRenderDrawColor(renderer, BACKGROUND_R ,BACKGROUND_G ,BACKGROUND_B ,255);        
+    for(uint8_t i = 0; i < S->numEdges; i++)
+    {                
+        uint8_t V1Idx = S->edges[i][0];
+        uint8_t V2Idx = S->edges[i][1];
+        SDL_RenderDrawLine(renderer, WINDOW_MIDDLE_X + S->vertexes[V1Idx].x, WINDOW_MIDDLE_Y + S->vertexes[V1Idx].y, WINDOW_MIDDLE_X + S->vertexes[V2Idx].x, WINDOW_MIDDLE_Y + S->vertexes[V2Idx].y);
+    }    
+}
