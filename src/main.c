@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdint.h>
 #include "SDL2/SDL.h"
@@ -9,48 +10,30 @@
 #include "shape.h"
 #include "general.h"
 
-// g++ -o main.exe ./src/main.c -Iinc ./src/shape.c -Iinc ./src/general.c -lmingw32 -lSDL2main -lSDL2
+#pragma pack(1)
+
+//! TODO: Restructure to follow proper graphics pipeline
+//          - Vertex array
+//          - Vertex processing (i.e. line drawing or edge handling) usually bundled into triangles
+//          - Rasterisation (This may be performed by SDL as it uses OpenGL)
+//          - Shading
+//          - Output buffer
+
+//! TODO: Should edge store pointer to each shape vertex at start and end of edge?
+//! BUG: C1 and C2 dont seem to be seperatable, fix i.e. move cubes to different coordinates
+//! TODO: Add better way to render multiple shapes i.e. should the canvas hold a pointer list to all shapes and passed into function?
+//! TODO: Implement some placement engine e.g. placing a wall of cubes
+//! TODO: Add extra 3D shapes
 
 bool g_isRunning = true;    
 
-double w = 200;
-double h = 200;
-double d = 200;
-
-
-//! TODO: Refactor this process into a clean function or something
-Vec3D v1 = {.x = w/2,   .y= h/2,  .z=d/2 };
-Vec3D v2 = {.x = w/2,   .y=-h/2,  .z=d/2 };
-Vec3D v3 = {.x = -w/2,  .y=-h/2,  .z=d/2 };
-Vec3D v4 = {.x = -w/2,  .y= h/2,  .z=d/2 };
-
-Vec3D v5 = {.x = w/2,   .y= h/2,  .z=-d/2};
-Vec3D v6 = {.x = w/2,   .y=-h/2,  .z=-d/2};
-Vec3D v7 = {.x = -w/2,  .y=-h/2,  .z=-d/2};
-Vec3D v8 = {.x = -w/2,  .y= h/2,  .z=-d/2};
-Vec3D vertexes[] = {v1, v2, v3, v4, v5, v6, v7, v8};
-
-uint8_t e1[] =  {0 , 1};
-uint8_t e2[] =  {1 , 2};
-uint8_t e3[] =  {2 , 3};
-uint8_t e4[] =  {3 , 0};
-uint8_t e5[] =  {4 , 5};
-uint8_t e6[] =  {5 , 6};
-uint8_t e7[] =  {6 , 7};
-uint8_t e8[] =  {7 , 4};
-uint8_t e9[] =  {0 , 4};
-uint8_t e10[] = {1 , 5};
-uint8_t e11[] = {2 , 6};
-uint8_t e12[] = {3 , 7};
-uint8_t* edges[] = {e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12};
-
-
-Shape cubey = { .vertexes = vertexes,
-                .numEdges = 12,
-                .numVertexes = 8,
-                .curRotation = {.x = 0, .y = 0, .z = 0},
-                .edges = edges,};
-
+void rotate_cube(SDL_Renderer *renderer, Shape* cube, uint16_t xR, uint16_t yR, uint16_t zR)
+{
+    shape_rotateY( cube, yR );         
+    shape_rotateX( cube, xR );
+    shape_rotateZ( cube, zR );     
+    shape_draw(renderer, cube, 255, 255, 255);       
+}
 
 int main(int argv, char** args)
 {
@@ -60,18 +43,31 @@ int main(int argv, char** args)
         
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);    
+    SDL_SetWindowTitle(window, "SDL - CLOSE ME");
     SDL_SetRenderDrawColor(renderer, BACKGROUND_R, BACKGROUND_G, BACKGROUND_B, BACKGROUND_A);        
-        
+
+    Shape* C1 = shape_cube(50,50,50,   100,   100,  100);
+    Shape* C2 = shape_cube(50,50,50,  -100,   100,  100);
+    Shape* C3 = shape_cube(50,50,50,   100,  -100,  100);
+    Shape* C4 = shape_cube(50,50,50,  -100,  -100,  100);
+
+    Shape* C5 = shape_cube(50,50,50,  100 ,  100  , -100);
+    Shape* C6 = shape_cube(50,50,50,  -100,  100  , -100);
+    Shape* C7 = shape_cube(50,50,50,  100 ,  -100 , -100);
+    Shape* C8 = shape_cube(50,50,50,  -100,  -100 , -100);
+
     while (g_isRunning)
-    {
-        SDL_RenderPresent(renderer);    
-        shape_rotateY( &cubey, 1 );         
-        shape_rotateX( &cubey, 1 );
-        shape_rotateZ( &cubey, 1 );     
-        shape_draw(renderer, &cubey, 255, 255, 255);   
-        SDL_RenderPresent(renderer);    
-        SDL_Delay(WINDOW_TICK_MS);        
-        shape_clear(renderer, &cubey);   
+    {           
+        rotate_cube( renderer, C1,  1, 1, 1 );
+        rotate_cube( renderer, C2,  1, 1, 1 );
+        rotate_cube( renderer, C3,  1, 1, 1 );
+        rotate_cube( renderer, C4,  1, 1, 1 );
+        rotate_cube( renderer, C5,  1, 1, 1 );
+        rotate_cube( renderer, C6,  1, 1, 1 );
+        rotate_cube( renderer, C7,  1, 1, 1 );
+        rotate_cube( renderer, C8,  1, 1, 1 );                             
+        SDL_RenderPresent(renderer);                    
+        SDL_Delay(WINDOW_TICK_MS);                     
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
@@ -87,6 +83,14 @@ int main(int argv, char** args)
                 }
             }
         }
+        shape_clear(renderer, C1);   
+        shape_clear(renderer, C2);           
+        shape_clear(renderer, C3);   
+        shape_clear(renderer, C4);   
+        shape_clear(renderer, C5);   
+        shape_clear(renderer, C6);           
+        shape_clear(renderer, C7);   
+        shape_clear(renderer, C8);        
         
     }
 
