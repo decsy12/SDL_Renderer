@@ -2,13 +2,7 @@
 #define GENERAL_H
 
 #include <stdint.h>
-
-typedef struct 
-{
-    double x;
-    double y;
-    double z;
-}Vec3D;
+#include "mesh.h"
 
 #define deg2rad(deg)        ( deg * M_PI ) / 180
 #define rad2deg(rad)        rad * ( 180 / M_PI )
