@@ -1,10 +1,20 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include <math.h>
+
+
 #define WINDOW_WIDTH        1000
 #define WINDOW_HEIGHT       1000
 #define WINDOW_MIDDLE_X     WINDOW_WIDTH / 2
 #define WINDOW_MIDDLE_Y     WINDOW_HEIGHT / 2
+
+#define PROJ_ASPECT_RATIO   (float)WINDOW_HEIGHT / (float)WINDOW_WIDTH
+#define PROJ_FAR            1000.0f
+#define PROJ_NEAR           0.1f
+#define PROJ_FOV            90.0f
+#define PROJ_FOV_RAD        1.0f / tanf(PROJ_FOV * 0.5f / 180.0f * M_PI)
+
 
 #define PIXEL_ALIGNMENT_X   WINDOW_MIDDLE_X
 #define PIXEL_ALIGNMENT_Y   WINDOW_MIDDLE_Y

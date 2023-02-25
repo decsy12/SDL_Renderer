@@ -34,7 +34,7 @@ void rotate_cube(SDL_Renderer *renderer, Mesh* cube, uint16_t xR, uint16_t yR, u
     mesh_rotateY( cube, yR );         
     mesh_rotateX( cube, xR );    
     mesh_rotateZ( cube, zR );     
-    mesh_draw(renderer, cube, 255, 255, 255);       
+    canvas_drawMesh(renderer, cube, 255, 255, 255);       
 }
 
 int main(int argv, char** args)
@@ -58,15 +58,18 @@ int main(int argv, char** args)
     // Shape* C7 = shape_cube(50,50,50,  100 ,  -100 , -100);
     // Shape* C8 = shape_cube(50,50,50,  -100,  -100 , -100);
 
-    Vec3D p1 = {0, 0 , 50};
-    Vec3D p2 = {100, 0 , 50};
-    Vec3D p3 = {100, 100 , 50};
-    Vec3D p4 = {0, 100 , 50};
+    float w = 5;
+    float h = 5;
+    float d = 5;
+    Vec3D p1 = {-w/2, -h/2 , d/2};
+    Vec3D p2 = {w/2, -h/2 , d/2};
+    Vec3D p3 = {w/2, h/2 , d/2};
+    Vec3D p4 = {-w/2, h/2 , d/2};
 
-    Vec3D p5 = {0, 0 , -50};
-    Vec3D p6 = {100, 0 , -50};
-    Vec3D p7 = {100, 100 , -50};
-    Vec3D p8 = {0, 100 , -50};
+    Vec3D p5 = {-w/2, -h/2 , -d/2};
+    Vec3D p6 = {w/2, -h/2 , -d/2};
+    Vec3D p7 = {w/2, h/2 , -d/2};
+    Vec3D p8 = {-w/2, h/2 , -d/2};
 
     Triangle t1 = {.point = {p1, p2, p3}};
     Triangle t2 = {.point = {p3, p4, p1}};        
@@ -90,6 +93,9 @@ int main(int argv, char** args)
     Mesh Cube = { .tris = arr,
                     .numTriangles = sizeof(arr)/sizeof(arr[0])};    
 
+    // mesh_translate( &Cube, {0,0,-10});
+
+    // canvas_drawMesh(renderer, &Cube, 255, 25, 255);
     while (g_isRunning)
     {           
         //! TODO: Replace these rotate functions with Canvas functions i.e. for loop rotating all canvas objects
@@ -112,7 +118,7 @@ int main(int argv, char** args)
                 }
             }
         }
-        mesh_clear(renderer, &Cube);      
+        canvas_clearMesh(renderer, &Cube);      
         
     }
 

@@ -101,25 +101,6 @@ Vec3D rV = { .x = 0, .y = 0, .z = 0 };
 //     return temp;
 // }
 
-//! TODO: replace shape with mesh across full document
-static void mesh_drawTriangle( SDL_Renderer* renderer, Triangle triag )
-{
-    SDL_RenderDrawLine(renderer, PIXEL_ALIGNMENT_X + triag.point[0].x, PIXEL_ALIGNMENT_Y + triag.point[0].y, PIXEL_ALIGNMENT_X + triag.point[1].x, PIXEL_ALIGNMENT_Y + triag.point[1].y );
-    SDL_RenderDrawLine(renderer, PIXEL_ALIGNMENT_X + triag.point[1].x, PIXEL_ALIGNMENT_Y + triag.point[1].y, PIXEL_ALIGNMENT_X + triag.point[2].x, PIXEL_ALIGNMENT_Y + triag.point[2].y );
-    SDL_RenderDrawLine(renderer, PIXEL_ALIGNMENT_X + triag.point[2].x, PIXEL_ALIGNMENT_Y + triag.point[2].y, PIXEL_ALIGNMENT_X + triag.point[0].x, PIXEL_ALIGNMENT_Y + triag.point[0].y );
-}
-
-
-void mesh_draw( SDL_Renderer* renderer, Mesh* mesh, uint16_t R, uint16_t G, uint16_t B )
-{
-    //! TODO: Colour of triangle edge should be stored in object
-    SDL_SetRenderDrawColor(renderer, R ,G ,B ,255);       
-    for(uint8_t i = 0 ; i < mesh->numTriangles; i++ )
-    {
-        mesh_drawTriangle( renderer, mesh->tris[i]);
-    }
-}
-
 
 void mesh_moveTo( Mesh* mesh, Vec3D pV )
 {    
@@ -144,6 +125,7 @@ void mesh_moveTo( Mesh* mesh, Vec3D pV )
     }
 }
 
+
 void mesh_translate( Mesh* mesh, Vec3D tVec )
 {
     for( uint16_t i = 0; i < mesh->numTriangles; i++ )
@@ -151,11 +133,12 @@ void mesh_translate( Mesh* mesh, Vec3D tVec )
         for(uint8_t j = 0; j < 3; j++)
         {
             mesh->tris[i].point[j].x += tVec.x;
-            mesh->tris[i].point[j].y += tVec.z;
+            mesh->tris[i].point[j].y += tVec.y;
             mesh->tris[i].point[j].z += tVec.z;
         }
     }    
 }
+
 
 void mesh_scale( Mesh* mesh, Vec3D sVec )
 {
@@ -171,6 +154,7 @@ void mesh_scale( Mesh* mesh, Vec3D sVec )
     }    
 }
 
+
 void mesh_setSize(Mesh* mesh, Vec3D sVec)
 {
     double newWidth = mesh->width * sVec.x;
@@ -180,8 +164,6 @@ void mesh_setSize(Mesh* mesh, Vec3D sVec)
     mesh->height = newHeight;
     mesh->depth = newDepth;    
 }
-
-
 
 
 void mesh_rotateZ( Mesh* mesh, double degrees )
@@ -260,38 +242,13 @@ void mesh_rotateX( Mesh* mesh, double degrees )
         }
     }   
 }
-        
+
+
 void mesh_setRotation(Mesh* mesh, Vec3D Rvec_deg)
 {        
     mesh->curRotation.x = (int)round(mesh->curRotation.x + Rvec_deg.x) % 360;
     mesh->curRotation.y = (int)round(mesh->curRotation.y + Rvec_deg.y) % 360;
     mesh->curRotation.z = (int)round(mesh->curRotation.z + Rvec_deg.z) % 360;    
-}
-
-
-
-// void my_PerspectiveFOV(double fov, double aspect, double near, double far, double* mret) {
-//     double D2R = M_PI / 180.0;
-//     double yScale = 1.0 / tan(D2R * fov / 2);
-//     double xScale = yScale / aspect;
-//     double nearmfar = near - far;
-//     double m[] = {
-//         xScale, 0, 0, 0,
-//         0, yScale, 0, 0,
-//         0, 0, (far + near) / nearmfar, -1,
-//         0, 0, 2*far*near / nearmfar, 0 
-//     };    
-//     memcpy(mret, m, sizeof(double)*16);
-// }
-
-
-void mesh_clear( SDL_Renderer* renderer, Mesh* mesh )
-{
-    SDL_SetRenderDrawColor(renderer, BACKGROUND_R ,BACKGROUND_G ,BACKGROUND_B ,255);        
-    for(uint8_t i = 0; i < mesh->numTriangles; i++)
-    {                
-        mesh_drawTriangle(renderer, mesh->tris[i]);        
-    }    
 }
 
 
